@@ -1,7 +1,7 @@
 const handler = async (m, {conn}) => {
   m.reply(global.igbombon);
 };
-handler.command = /^(igbombóm|igbombon)$/i;
+handler.command = /^(igbombóm|igdueña)$/i;
 export default handler;
 handler.admin = true
 handler.group = true
