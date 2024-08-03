@@ -127,7 +127,7 @@ let menu = `${lenguajeGB['smsConfi2']()} *${user.genero === 0 ? '👤' : user.ge
 
 ╭━〔 SPAM Y EDITS 〕⬣
 ┃👤➺ .SpamComu
-┃👤➺ .igbombon
+┃👤➺ .igdueña
 ╰━━━━━━━━━━━⬣
 
 ╭━ MULTI JUEGOS ━⬣
