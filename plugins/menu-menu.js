@@ -87,15 +87,13 @@ let menu = `${lenguajeGB['smsConfi2']()} *${user.genero === 0 ? '👤' : user.ge
 *〔 🍬BOMBON BOT 🫧 〕
 
 ╭━〔 BOMBON BOT 〕━⬣
-┃ACTIVO: 03.06.2024
+┃ACTIVO: SIEMPRE
  DUEÑA :+52 56 4811 8032
 ╰━━━━━━━━━━━⬣
-╭━〔COMANDOS〕━⬣
-┃.menu | .comandos
-🍬🫧🍭🫧🍬🫧🍭🫧🍬
-┃PERMANENTE | MENSUAL
+╭━〔TU MEJOR ELECCION〕━⬣
 ╰━━━━━━━━━━━⬣
-
+  MAS INFO DE LA BOT
+ ╰━━━━━━━━━━━⬣
 ╭━〔 FUNCION VS / REGLAS / FICHA〕━⬣
 ┃🍬➺ .Fem4
 ┃🍬➺ .Fem6
