@@ -1,68 +1,73 @@
-import fetch from 'node-fetch';
-import yts from 'yt-search';
-import ytdl from 'ytdl-core';
-import axios from 'axios';
-import {youtubedl, youtubedlv2} from '@bochilteam/scraper';
-const handler = async (m, {conn, command, args, text, usedPrefix}) => {
+/*
 
-if (command == 'play' || command == 'play2') {
-if (!text) return conn.reply(m.chat, `*🤔Que esta buscado? 🤔*\n*Ingrese el nombre del la canción*\n\n*Ejemplo:*\n#play emilia 420`, m, {contextInfo: {externalAdReply :{ mediaUrl: null, mediaType: 1, description: null, title: wm, body: '', previewType: 0, thumbnail: img.getRandom(), sourceUrl: redes.getRandom()}}})
-const yt_play = await search(args.join(' '))
-const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
-│║📌 *Título* : ${yt_play[0].title}
-│║📆 *Publicado:* ${yt_play[0].ago}
-│║⌚ *Duración:* ${secondString(yt_play[0].duration.seconds)}
-│║👀 *Vistas:* ${MilesNumber(yt_play[0].views)}
-│║
-│║        *████████████┃%100*
-╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
+- PLUGIN PLAY YOUTUBE 2
+- By Kenisawa
 
-await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `${usedPrefix}ytmp3 ${yt_play[0].url}`], ['video', `${usedPrefix}ytmp4 ${yt_play[0].url}`]], m)
-}
+*/import yts from "yt-search"
+import _ from "lodash"
 
-if (command == 'play3' || command == 'play4') {
-if (!text) return conn.reply(m.chat, `*🤔Que esta buscado? 🤔*\n*Ingrese el nombre del la canción*\n\n*Ejemplo:*\n#play emilia 420`, m, {contextInfo: {externalAdReply :{ mediaUrl: null, mediaType: 1, description: null, title: wm, body: '', previewType: 0, thumbnail: img.getRandom(), sourceUrl: redes.getRandom()}}})
-const yt_play = await search(args.join(' '))
-const texto1 = `╭───≪~*╌◌ᰱ•••⃙❨͟͞P̸͟͞L̸͟A̸͟͞Y̸͟͞❩⃘•••ᰱ◌╌*~*
-│║📌 *Título* : ${yt_play[0].title}
-│║📆 *Publicado:* ${yt_play[0].ago}
-│║⌚ *Duración:* ${secondString(yt_play[0].duration.seconds)}
-│║👀 *Vistas:* ${MilesNumber(yt_play[0].views)}
-│║
-│║        *████████████┃%100*
-╰─•┈┈┈•••✦𝒟ℳ✦•••┈┈┈•─╯⟤`.trim()
+let handler = async (m, { conn, command, usedPrefix, args }) => {
+  const text = _.get(args, "length") ? args.join(" ") : _.get(m, "quoted.text") || _.get(m, "quoted.caption") || _.get(m, "quoted.description") || ""
+  if (typeof text !== 'string' || !text.trim()) return m.reply(`✦ Ingresa una consulta\n*Ejemplo:* .${command} Joji Ew`)
 
-await conn.sendButton(m.chat, texto1, botname, yt_play[0].thumbnail, [['Audio', `${usedPrefix}ytmp3 ${yt_play[0].url}`], ['video', `${usedPrefix}ytmp4 ${yt_play[0].url}`], ['Mas resultados', `${usedPrefix}yts ${text}`]], m)
-}}
-handler.help = ['play', 'play2'];
-handler.tags = ['downloader'];
-handler.command = ['play', 'play2', 'play3', 'play4']
-//handler.limit = 3
-handler.register = true 
-export default handler;
+  await m.reply('✦ Espere un momento...')
 
-async function search(query, options = {}) {
-const search = await yts.search({query, hl: 'es', gl: 'ES', ...options});
-return search.videos;
-}
+  const vid = await ytsearch(text)
+  if (!vid?.url) return m.reply("Audio no encontrado, intenta usando otra consulta.")
 
-function MilesNumber(number) {
-const exp = /(\d)(?=(\d{3})+(?!\d))/g;
-const rep = '$1.';
-const arr = number.toString().split('.');
-arr[0] = arr[0].replace(exp, rep);
-return arr[1] ? arr.join('.') : arr[0];
-}
+  const { title = "No encontrado", thumbnail, timestamp = "No encontrado", views = "No encontrado", ago = "No encontrado", url } = vid
 
-function secondString(seconds) {
-seconds = Number(seconds);
-const d = Math.floor(seconds / (3600 * 24));
-const h = Math.floor((seconds % (3600 * 24)) / 3600);
-const m = Math.floor((seconds % 3600) / 60);
-const s = Math.floor(seconds % 60);
-const dDisplay = d > 0 ? d + (d == 1 ? ' día, ' : ' días, ') : '';
-const hDisplay = h > 0 ? h + (h == 1 ? ' hora, ' : ' horas, ') : '';
-const mDisplay = m > 0 ? m + (m == 1 ? ' minuto, ' : ' minutos, ') : '';
-const sDisplay = s > 0 ? s + (s == 1 ? ' segundo' : ' segundos') : '';
-return dDisplay + hDisplay + mDisplay + sDisplay;
+  const captvid = ` *✦Título:* ${title}\n *✧Duración:* ${timestamp}\n *✧Publicado:* ${ago}\n *✦Link:* ${url}`
+
+  const ytthumb = (await conn.getFile(thumbnail))?.data
+
+  const infoReply = {
+    contextInfo: {
+      externalAdReply: {
+        body: `✧ En unos momentos se entrega su audio`,
+        mediaType: 1,
+        mediaUrl: url,
+        previewType: 0,
+        renderLargerThumbnail: true,
+        sourceUrl: url,
+        thumbnail: ytthumb,
+        title: `Y O U T U B E - A U D I O`
+      }
+    }
   }
+
+  await conn.reply(m.chat, captvid, m, infoReply)
+  infoReply.contextInfo.externalAdReply.body = `Audio descargado con éxito`
+
+  const res = await fetch(`https://api.zenkey.my.id/api/download/ytmp3?apikey=zenkey&url=${url}`)
+  const audioData = await res.json()
+  
+  if (audioData.status && audioData.result?.downloadUrl) {
+    await conn.sendMessage(m.chat, {
+      audio: { url: audioData.result.downloadUrl },
+      caption: captvid,
+      mimetype: "audio/mpeg",
+      contextInfo: infoReply.contextInfo
+    }, { quoted: m })
+  } else {
+    await m.reply("Error al descargar el audio.")
+  }
+}
+
+handler.help = ["play2 <consulta>"]
+handler.tags = ["downloader"]
+handler.command = /^(play2|ytplay|playmp3)$/i
+handler.limit = true
+export default handler
+
+async function ytsearch(query, maxResults = 5, similarityThreshold = .5) {
+  const res = await yts(query)
+  const videos = _.filter(res.videos.slice(0, maxResults), video => {
+    const titleWords = _.words(_.toLower(video.title))
+    const queryWords = _.words(_.toLower(query))
+    const matchedWords = _.intersection(titleWords, queryWords)
+    const similarity = _.size(matchedWords) / _.size(titleWords)
+    return similarity >= similarityThreshold || _.size(matchedWords) >= _.size(queryWords) - 1
+  })
+  return _.isEmpty(videos) ? {} : _.first(videos)
+}
